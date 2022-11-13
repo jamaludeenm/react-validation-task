@@ -15,14 +15,20 @@ const Home = ({inputarr,setInputarr}) => {
         dispatch({type:"handledelete",payload:id})
         console.log(id);
     };
+
+    const handlecomplete = (id) =>{
+        dispatch({type:"handlecomplete",payload:id})
+        console.log(id)
+    }
+
     const handleedit =  ({id}) =>{
         navigate({
             pathname:"/Task",
             search:createSearchParams({
-              id:id
+              id:id,
             }).toString()
-          })
-          
+          }) 
+
     }
 
     return (
@@ -55,23 +61,21 @@ const Home = ({inputarr,setInputarr}) => {
                     </tr>
                     {
                         state.inputarr?.map(
-                            (info) => {
+                            (item,info) => {
                                 return (
                                     <tr key={info.id}>
-                                        <td>{info.TaskName}</td>
-                                        <td>{info.Description}</td>
+                                        <td>{item.title}</td>
+                                        <td>{item.describe}</td>
                                         <td>
-                                            <button className="button-complete task-button p-1 " style={{borderRadius:"3px"}}>
-                                                complete
-                                            </button>
+                                            <input type="checkbox" checked={item.completed} onClick={() =>handlecomplete(item) } className="button-complete task-button p-1 " style={{borderRadius:"3px"}}/>
                                         </td>
                                         <td>
-                                            <button onClick={() =>handleedit(info) } className='button-edit task-button p-1' style={{borderRadius:"3px"}}>
+                                            <button onClick={() =>handleedit(item) } className='button-edit task-button p-1' style={{borderRadius:"3px"}}>
                                                 Edit
                                             </button>
                                         </td>
                                         <td>
-                                            <button onClick={() =>handledelete(info) } className='button-delete task-button p-1' style={{borderRadius:"3px"}}>
+                                            <button onClick={() =>handledelete(item) } className='button-delete task-button p-1' style={{borderRadius:"3px"}}>
                                                 Delete
                                             </button>
                                         </td>
@@ -88,3 +92,5 @@ const Home = ({inputarr,setInputarr}) => {
 }
 
 export default Home
+
+
