@@ -11,7 +11,8 @@ const Home = () => {
     const navigate = useNavigate();
     const { state, dispatch } = useContext(StateContext);
     const [logout, setLogout] = useState(false);
-    const [order, setOrder] = useState("ASC")
+    const [order, setOrder] = useState("ASC");
+    const [search,setSearch] = useState("");
     console.log(state);
 
 
@@ -80,10 +81,9 @@ const Home = () => {
                     </div>
                 </div>
                 <form class="form-inline">
-                    <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search"/>
-                        <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+                    <input class="form-control mr-sm-2" onChange={(e) =>{setSearch(e.target.value)}} type="search" placeholder="Search" aria-label="Search"/>
                 </form>
-                <button class="nav-item mr-3 nav-link p-3" onClick={logouthandler} href="{% url 'logout' %}" style={{ backgroundColor: '#e85c29' }}>Logout</button >
+                <button class="nav-item mr-3 nav-link p-2" onClick={logouthandler} href="{% url 'logout' %}" style={{ backgroundColor: '#e85c29' }}>Logout</button >
             </nav>
             {/* <table style={{ marginTop: "30px" }} border={1} width="30%" cellPadding={10}>
                 <tbody>
@@ -121,7 +121,7 @@ const Home = () => {
             <TableContainer component={Paper} style={{ marginTop: "30px" }}>
                 <Table aria-label="simple table" stickyHeader>
                     <TableHead>
-                        <TableRow>
+                        <TableRow style={{cursor:"pointer"}}>
                             <TableCell onClick={() => sorting("title")}><b>TaskName</b></TableCell>
                             <TableCell onClick={() => sorting("describe")}><b>Description</b></TableCell>
                             <TableCell onClick={() => sorting("date")}><b>Date</b></TableCell>
@@ -132,14 +132,24 @@ const Home = () => {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {state.inputarr?.map((item, info) => (
+                        {state.inputarr?.filter((val) =>{
+                            if(search === ""){
+                                return val;
+                            }else if(
+                                val.title.toLowerCase().includes(search.toLowerCase()) ||
+                                val.describe.toLowerCase().includes(search.toLowerCase()) ||
+                                val.date.toLowerCase().includes(search.toLowerCase()) 
+                            ){
+                                return val;
+                            }
+                        }).map((item, info) => (
                             <TableRow key={info.id}>
                                 <TableCell component="th" scope="row">
                                     {item.title}
                                 </TableCell>
                                 <TableCell >{item.describe}</TableCell>
                                 <TableCell >{item.date}</TableCell>
-                                <TableCell>{item.priority ? <Favorite style={{ color: "#e10000" }} /> : <FavoriteBorder />}</TableCell>
+                                <TableCell>{item.priority ? <Favorite style={{ color: "#e10000" }} /> : <FavoriteBorder/>}</TableCell>
                                 <TableCell ><Checkbox
                                     checked={item.completed}
                                     onClick={() => handlecomplete(item)}
